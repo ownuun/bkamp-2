@@ -1,14 +1,21 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { type Locale } from './config';
 
 export function useLocaleSwitcher() {
-  const switchLocale = useCallback((locale: Locale) => {
-    // Set cookie and reload
-    document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000`;
-    window.location.reload();
-  }, []);
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
-  return { switchLocale };
+  const switchLocale = useCallback((locale: Locale) => {
+    // Set cookie
+    document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000`;
+    // Refresh server components
+    startTransition(() => {
+      router.refresh();
+    });
+  }, [router]);
+
+  return { switchLocale, isPending };
 }
