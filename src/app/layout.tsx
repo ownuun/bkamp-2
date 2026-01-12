@@ -33,6 +33,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
+      <head />
       <body className={`${inter.variable} antialiased bg-white min-h-screen`}>
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>{children}</AuthProvider>
