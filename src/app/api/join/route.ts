@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { getEventBySlug, getParticipant, joinEvent } from '@/lib/supabase';
 
 interface JoinRequest {
   eventSlug: string;
@@ -33,9 +32,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get event
-    const event = await getEventBySlug(eventSlug);
-    if (!event) {
+    // Get event (using same supabase client)
+    const { data: event, error: eventError } = await supabase
+      .from('events')
+      .select('*')
+      .eq('slug', eventSlug)
+      .eq('is_active', true)
+      .single();
+
+    if (eventError || !event) {
+      console.error('Error fetching event:', eventError);
       return NextResponse.json(
         { error: '이벤트를 찾을 수 없습니다' },
         { status: 404 }
@@ -101,8 +107,14 @@ export async function POST(request: NextRequest) {
       user = data;
     }
 
-    // Check if already a participant
-    const existingParticipant = await getParticipant(event.id, user.id);
+    // Check if already a participant (using same supabase client)
+    const { data: existingParticipant } = await supabase
+      .from('participants')
+      .select('*')
+      .eq('event_id', event.id)
+      .eq('user_id', user.id)
+      .single();
+
     if (existingParticipant) {
       return NextResponse.json(
         { message: '이미 등록된 사용자입니다', participant: existingParticipant },
@@ -110,9 +122,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Join event
-    const participant = await joinEvent(event.id, user.id, 'public');
-    if (!participant) {
+    // Join event (using same supabase client)
+    const qrCodeData = `meetlink:${event.id}:${user.id}:${Date.now()}`;
+    const { data: participant, error: joinError } = await supabase
+      .from('participants')
+      .insert({
+        event_id: event.id,
+        user_id: user.id,
+        visibility: 'public',
+        qr_code_data: qrCodeData,
+        is_organizer: false,
+      })
+      .select()
+      .single();
+
+    if (joinError || !participant) {
+      console.error('Error joining event:', joinError);
       return NextResponse.json(
         { error: '이벤트 참여에 실패했습니다' },
         { status: 500 }
