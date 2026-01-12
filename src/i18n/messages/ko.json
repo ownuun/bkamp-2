@@ -58,8 +58,11 @@
     "coverImageDescription": "이미지 URL을 입력하세요",
     "creating": "생성 중...",
     "notFound": "이벤트를 찾을 수 없습니다",
-    "participants": "명 참여 중",
-    "viewAll": "전체 보기 →"
+    "participants": "{count}명 참여 중",
+    "viewAll": "전체 보기 →",
+    "registerProfile": "LinkedIn 프로필 등록하기",
+    "registerDescription": "프로필을 등록하면 다른 참여자들과 연결할 수 있습니다",
+    "loginToCreate": "이벤트를 만들려면 먼저 로그인해주세요"
   },
   "join": {
     "title": "이벤트 참여하기",
@@ -75,6 +78,12 @@
     "linkedinUrl": "LinkedIn 프로필 URL",
     "linkedinUrlPlaceholder": "https://linkedin.com/in/username",
     "linkedinUrlDescription": "다른 참여자가 내 LinkedIn 프로필을 방문할 수 있습니다",
+    "linkedinUrlGuide": "LinkedIn URL 찾는 법",
+    "linkedinUrlGuideTitle": "LinkedIn 프로필 URL 찾기",
+    "linkedinUrlGuideStep1": "LinkedIn 앱 또는 웹사이트에서 내 프로필로 이동",
+    "linkedinUrlGuideStep2": "프로필 상단의 연락처 정보 클릭",
+    "linkedinUrlGuideStep3": "프로필 URL 복사",
+    "linkedinUrlGuideHint": "위 화면에서 \"프로필\" 아래 URL을 복사하세요",
     "submit": "등록하기",
     "submitting": "등록 중...",
     "success": "등록 완료!",
@@ -84,16 +93,29 @@
     "registerProfile": "LinkedIn 프로필 등록하기",
     "registerProfileDescription": "프로필을 등록하면 다른 참여자들과 연결할 수 있습니다",
     "visibilityNote": "로그인하면 다른 참여자들이 내 프로필을 볼 수 있습니다",
-    "registrationNote": "등록하면 같은 이벤트 참여자들이 내 프로필을 볼 수 있습니다"
+    "registrationNote": "등록하면 같은 이벤트 참여자들이 내 프로필을 볼 수 있습니다",
+    "enterName": "이름 입력",
+    "registrationFailed": "등록에 실패했습니다"
   },
   "directory": {
     "title": "참여자 디렉토리",
+    "participantsTitle": "참여자",
     "browseParticipants": "참여자 둘러보기",
     "backToEvent": "이벤트 페이지로 돌아가기",
     "connect": "연결",
     "noParticipants": "아직 참여자가 없습니다",
     "beFirst": "첫 번째 참여자가 되어보세요!",
-    "joinNow": "지금 참여하기"
+    "joinNow": "지금 참여하기",
+    "participantsOnly": "참여자만 열람 가능",
+    "participantsOnlyDescription": "이 이벤트에 먼저 등록해야 참여자 목록을 볼 수 있습니다.",
+    "joinEvent": "이벤트 참여하기",
+    "searchPlaceholder": "이름, 회사, 키워드로 검색",
+    "noSearchResults": "검색 결과가 없습니다",
+    "noSearchResultsDescription": "다른 키워드로 검색해보세요",
+    "noOtherParticipants": "아직 다른 참여자가 없습니다",
+    "shareEvent": "이벤트를 공유해서 더 많은 참여자를 초대하세요!",
+    "searchResults": "\"{query}\" 검색 결과: ",
+    "participantCount": "{count}명"
   },
   "footer": {
     "tagline": "MeetLink로 네트워킹을 더 쉽게"

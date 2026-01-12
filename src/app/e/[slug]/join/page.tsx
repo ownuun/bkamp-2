@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -24,6 +25,9 @@ export default function JoinPage() {
   const params = useParams();
   const slug = params.slug as string;
   const { user, isLoading: authLoading } = useAuth();
+  const t = useTranslations('join');
+  const tDirectory = useTranslations('directory');
+  const tValidation = useTranslations('validation');
 
   const [step, setStep] = useState<Step>('login');
   const [profileData, setProfileData] = useState<ProfileData>({
@@ -81,14 +85,14 @@ export default function JoinPage() {
 
   const handleJoin = async () => {
     if (!profileData.name.trim()) {
-      setError('이름을 입력해주세요');
+      setError(tValidation('nameRequired'));
       return;
     }
 
     // Validate LinkedIn URL (required)
     let normalizedUrl = profileData.linkedinUrl.trim();
     if (!normalizedUrl) {
-      setError('LinkedIn 프로필 URL을 입력해주세요');
+      setError(tValidation('linkedinUrlRequired'));
       setShowGuide(true);
       return;
     }
@@ -101,12 +105,12 @@ export default function JoinPage() {
     try {
       const url = new URL(normalizedUrl);
       if (!url.hostname.includes('linkedin.com') || !normalizedUrl.includes('/in/')) {
-        setError('올바른 LinkedIn 프로필 URL을 입력해주세요');
+        setError(tValidation('invalidLinkedInUrl'));
         setShowGuide(true);
         return;
       }
     } catch {
-      setError('올바른 LinkedIn 프로필 URL을 입력해주세요');
+      setError(tValidation('invalidLinkedInUrl'));
       setShowGuide(true);
       return;
     }
@@ -132,12 +136,12 @@ export default function JoinPage() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || '등록에 실패했습니다');
+        throw new Error(data.error || t('registrationFailed'));
       }
 
       setStep('success');
     } catch (err) {
-      setError(err instanceof Error ? err.message : '등록에 실패했습니다');
+      setError(err instanceof Error ? err.message : t('registrationFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -164,9 +168,9 @@ export default function JoinPage() {
               </svg>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900 mb-2">이미 등록되어 있습니다</h1>
+              <h1 className="text-xl font-bold text-gray-900 mb-2">{t('alreadyJoined')}</h1>
               <p className="text-gray-600">
-                이 이벤트에 이미 참여하셨습니다.
+                {t('alreadyJoinedDescription')}
               </p>
             </div>
             <div className="space-y-3">
@@ -174,13 +178,13 @@ export default function JoinPage() {
                 href={`/e/${slug}/directory`}
                 className="block w-full py-3 px-4 bg-brand-600 text-white text-center rounded-lg font-semibold hover:bg-brand-700 transition-colors"
               >
-                참여자 둘러보기
+                {tDirectory('browseParticipants')}
               </Link>
               <Link
                 href={`/e/${slug}`}
                 className="block w-full py-3 px-4 border border-gray-300 text-gray-700 text-center rounded-lg font-medium hover:bg-gray-50 transition-colors"
               >
-                이벤트 페이지로 돌아가기
+                {tDirectory('backToEvent')}
               </Link>
             </div>
           </CardContent>
@@ -201,9 +205,9 @@ export default function JoinPage() {
               </svg>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900 mb-2">등록 완료!</h1>
+              <h1 className="text-xl font-bold text-gray-900 mb-2">{t('success')}</h1>
               <p className="text-gray-600">
-                이제 다른 참여자들을 둘러볼 수 있습니다
+                {t('successDescription')}
               </p>
             </div>
             <div className="space-y-3">
@@ -211,13 +215,13 @@ export default function JoinPage() {
                 href={`/e/${slug}/directory`}
                 className="block w-full py-3 px-4 bg-brand-600 text-white text-center rounded-lg font-semibold hover:bg-brand-700 transition-colors"
               >
-                참여자 둘러보기
+                {tDirectory('browseParticipants')}
               </Link>
               <Link
                 href={`/e/${slug}`}
                 className="block w-full py-3 px-4 border border-gray-300 text-gray-700 text-center rounded-lg font-medium hover:bg-gray-50 transition-colors"
               >
-                이벤트 페이지로 돌아가기
+                {tDirectory('backToEvent')}
               </Link>
             </div>
           </CardContent>
@@ -236,7 +240,7 @@ export default function JoinPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </Link>
-          <h1 className="font-semibold text-gray-900">이벤트 참여하기</h1>
+          <h1 className="font-semibold text-gray-900">{t('title')}</h1>
         </div>
       </header>
 
@@ -247,9 +251,9 @@ export default function JoinPage() {
             {step === 'login' && (
               <>
                 <div className="space-y-2 text-center">
-                  <h2 className="text-xl font-bold text-gray-900">LinkedIn으로 참여하기</h2>
+                  <h2 className="text-xl font-bold text-gray-900">{t('joinWithLinkedIn')}</h2>
                   <p className="text-sm text-gray-600">
-                    LinkedIn 계정으로 로그인하면 프로필 정보가 자동으로 입력됩니다
+                    {t('joinDescription')}
                   </p>
                 </div>
 
@@ -262,7 +266,7 @@ export default function JoinPage() {
 
                 <div className="text-center">
                   <p className="text-xs text-gray-500">
-                    로그인하면 다른 참여자들이 내 프로필을 볼 수 있습니다
+                    {t('visibilityNote')}
                   </p>
                 </div>
               </>
@@ -271,9 +275,9 @@ export default function JoinPage() {
             {step === 'profile' && (
               <>
                 <div className="space-y-2">
-                  <h2 className="text-xl font-bold text-gray-900">프로필 확인</h2>
+                  <h2 className="text-xl font-bold text-gray-900">{t('profileConfirm')}</h2>
                   <p className="text-sm text-gray-600">
-                    다른 참여자들에게 보여질 정보를 확인하세요
+                    {t('profileConfirmDescription')}
                   </p>
                 </div>
 
@@ -286,33 +290,33 @@ export default function JoinPage() {
                       size="xl"
                     />
                     <div className="flex-1">
-                      <p className="font-semibold text-gray-900">{profileData.name || '이름 입력'}</p>
-                      <p className="text-sm text-gray-500">{profileData.headline || '헤드라인 (선택)'}</p>
+                      <p className="font-semibold text-gray-900">{profileData.name || t('enterName')}</p>
+                      <p className="text-sm text-gray-500">{profileData.headline || t('headline')}</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   <Input
-                    label="이름"
-                    placeholder="홍길동"
+                    label={t('name')}
+                    placeholder={t('namePlaceholder')}
                     value={profileData.name}
                     onChange={(v) => setProfileData(prev => ({ ...prev, name: v }))}
                     isRequired
                   />
 
                   <Input
-                    label="헤드라인 (선택)"
-                    placeholder="예: Founder at StartupX"
+                    label={t('headline')}
+                    placeholder={t('headlinePlaceholder')}
                     value={profileData.headline}
                     onChange={(v) => setProfileData(prev => ({ ...prev, headline: v }))}
-                    description="직책, 회사, 또는 자신을 소개하는 한 줄"
+                    description={t('headlineDescription')}
                   />
 
                   <div className="space-y-2">
                     <Input
-                      label="LinkedIn 프로필 URL"
-                      placeholder="https://linkedin.com/in/username"
+                      label={t('linkedinUrl')}
+                      placeholder={t('linkedinUrlPlaceholder')}
                       value={profileData.linkedinUrl}
                       onChange={(v) => setProfileData(prev => ({ ...prev, linkedinUrl: v }))}
                       isRequired
@@ -325,28 +329,28 @@ export default function JoinPage() {
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      LinkedIn URL 찾는 법
+                      {t('linkedinUrlGuide')}
                     </button>
 
                     {showGuide && (
                       <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 space-y-3">
-                        <h4 className="font-medium text-blue-900">LinkedIn 프로필 URL 찾기</h4>
+                        <h4 className="font-medium text-blue-900">{t('linkedinUrlGuideTitle')}</h4>
                         <ol className="text-sm text-blue-800 space-y-2 list-decimal list-inside">
-                          <li>LinkedIn 앱 또는 웹사이트에서 <strong>내 프로필</strong>로 이동</li>
-                          <li>프로필 상단의 <strong>연락처 정보</strong> 클릭</li>
-                          <li><strong>프로필 URL</strong> 복사</li>
+                          <li><strong>{t('linkedinUrlGuideStep1')}</strong></li>
+                          <li><strong>{t('linkedinUrlGuideStep2')}</strong></li>
+                          <li><strong>{t('linkedinUrlGuideStep3')}</strong></li>
                         </ol>
                         <div className="relative w-full rounded-lg overflow-hidden border border-blue-200 bg-white">
                           <Image
                             src="/images/linkedin-url-guide.png"
-                            alt="LinkedIn URL 찾기 가이드"
+                            alt="LinkedIn URL Guide"
                             width={600}
                             height={500}
                             className="w-full h-auto"
                           />
                         </div>
                         <p className="text-xs text-blue-600">
-                          위 화면에서 &quot;프로필&quot; 아래 URL을 복사하세요
+                          {t('linkedinUrlGuideHint')}
                         </p>
                       </div>
                     )}
@@ -362,12 +366,12 @@ export default function JoinPage() {
                     className="w-full"
                     size="lg"
                   >
-                    {isLoading ? '등록 중...' : '등록하기'}
+                    {isLoading ? t('submitting') : t('submit')}
                   </Button>
                 </div>
 
                 <p className="text-xs text-gray-500 text-center">
-                  등록하면 같은 이벤트 참여자들이 내 프로필을 볼 수 있습니다
+                  {t('registrationNote')}
                 </p>
               </>
             )}

@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
 interface DirectorySearchProps {
@@ -12,6 +13,7 @@ interface DirectorySearchProps {
 
 export function DirectorySearch({ slug, initialQuery = '', initialView = 'list' }: DirectorySearchProps) {
   const router = useRouter();
+  const t = useTranslations('directory');
   const [query, setQuery] = useState(initialQuery);
   const [view, setView] = useState<'list' | 'grid'>(initialView);
 
@@ -41,7 +43,7 @@ export function DirectorySearch({ slug, initialQuery = '', initialView = 'list' 
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="이름, 회사, 키워드로 검색"
+          placeholder={t('searchPlaceholder')}
           className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
         />
         <svg

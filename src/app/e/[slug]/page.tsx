@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getTranslations } from 'next-intl/server';
 import { getEventBySlug, getParticipantCount, getEventParticipants } from '@/lib/supabase';
 import { formatDate } from '@/lib/utils';
 import { Avatar } from '@/components/ui/Avatar';
@@ -19,8 +20,13 @@ export default async function EventPage({ params }: EventPageProps) {
     notFound();
   }
 
-  const participantCount = await getParticipantCount(event.id);
-  const participants = await getEventParticipants(event.id);
+  const [participantCount, participants, tCommon, tEvent, tFooter] = await Promise.all([
+    getParticipantCount(event.id),
+    getEventParticipants(event.id),
+    getTranslations('common'),
+    getTranslations('event'),
+    getTranslations('footer'),
+  ]);
   const previewParticipants = participants.slice(0, 5);
 
   return (
@@ -29,7 +35,7 @@ export default async function EventPage({ params }: EventPageProps) {
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="text-brand-600 font-semibold text-lg">
-            MeetLink
+            {tCommon('appName')}
           </Link>
           <UserMenu />
         </div>
@@ -103,7 +109,7 @@ export default async function EventPage({ params }: EventPageProps) {
                     )}
                   </div>
                   <span className="text-sm text-gray-600">
-                    <strong className="font-semibold text-gray-900">{participantCount}</strong>명 참여 중
+                    {tEvent('participants', { count: participantCount })}
                   </span>
                 </div>
 
@@ -112,7 +118,7 @@ export default async function EventPage({ params }: EventPageProps) {
                     href={`/e/${slug}/directory`}
                     className="text-sm text-brand-600 hover:text-brand-700 font-medium"
                   >
-                    전체 보기 →
+                    {tEvent('viewAll')}
                   </Link>
                 )}
               </div>
@@ -124,10 +130,10 @@ export default async function EventPage({ params }: EventPageProps) {
                 href={`/e/${slug}/join`}
                 className="block w-full py-3 px-4 bg-brand-600 text-white text-center rounded-lg font-semibold hover:bg-brand-700 transition-colors"
               >
-                LinkedIn 프로필 등록하기
+                {tEvent('registerProfile')}
               </Link>
               <p className="text-center text-xs text-gray-500 mt-3">
-                프로필을 등록하면 다른 참여자들과 연결할 수 있습니다
+                {tEvent('registerDescription')}
               </p>
             </div>
           </CardContent>
@@ -136,7 +142,7 @@ export default async function EventPage({ params }: EventPageProps) {
 
       {/* Footer */}
       <footer className="max-w-2xl mx-auto px-4 py-8 text-center text-sm text-gray-500">
-        <p>MeetLink로 네트워킹을 더 쉽게</p>
+        <p>{tFooter('tagline')}</p>
       </footer>
     </div>
   );
