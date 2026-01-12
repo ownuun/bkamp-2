@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Card, CardContent } from '@/components/ui/Card';
 import { UserMenu } from '@/components/auth/UserMenu';
@@ -34,7 +35,15 @@ export default function HomePage() {
         </div>
 
         {/* Demo Event Card */}
-        <Card className="mb-8">
+        <Card className="mb-8 overflow-hidden">
+          <div className="relative h-40 w-full">
+            <Image
+              src="/images/vibe-coding-cover.png"
+              alt="Vibe Coding for Founders in SF"
+              fill
+              className="object-cover"
+            />
+          </div>
           <CardContent>
             <div className="flex items-center gap-2 text-xs font-medium text-brand-600 uppercase tracking-wide mb-3">
               <span className="w-2 h-2 bg-brand-600 rounded-full animate-pulse"></span>
