@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS events (
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    auth_user_id UUID UNIQUE REFERENCES auth.users(id) ON DELETE SET NULL,
     linkedin_url TEXT UNIQUE NOT NULL,
     linkedin_id TEXT,
     name TEXT NOT NULL,
@@ -35,6 +36,9 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Index for auth_user_id lookup
+CREATE INDEX IF NOT EXISTS idx_users_auth_user_id ON users(auth_user_id);
 
 -- Participants table (Event <-> User junction)
 CREATE TABLE IF NOT EXISTS participants (
@@ -115,6 +119,10 @@ ALTER TABLE connections ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Events are viewable by everyone" ON events
     FOR SELECT USING (is_active = true);
 
+-- Authenticated users can create events
+CREATE POLICY "Authenticated users can create events" ON events
+    FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
+
 -- Public read access for users (needed for participant lookup)
 CREATE POLICY "Users are viewable by everyone" ON users
     FOR SELECT USING (true);
@@ -122,6 +130,10 @@ CREATE POLICY "Users are viewable by everyone" ON users
 -- Users can insert themselves
 CREATE POLICY "Users can insert themselves" ON users
     FOR INSERT WITH CHECK (true);
+
+-- Users can update themselves
+CREATE POLICY "Users can update themselves" ON users
+    FOR UPDATE USING (true);
 
 -- Public read access for public participants
 CREATE POLICY "Public participants are viewable by everyone" ON participants
