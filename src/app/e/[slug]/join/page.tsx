@@ -86,15 +86,21 @@ export default function JoinPage() {
     }
 
     // Validate LinkedIn URL (required)
-    if (!profileData.linkedinUrl.trim()) {
+    let normalizedUrl = profileData.linkedinUrl.trim();
+    if (!normalizedUrl) {
       setError('LinkedIn 프로필 URL을 입력해주세요');
       setShowGuide(true);
       return;
     }
 
+    // Auto-add https:// if missing
+    if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
+      normalizedUrl = `https://${normalizedUrl}`;
+    }
+
     try {
-      const url = new URL(profileData.linkedinUrl);
-      if (!url.hostname.includes('linkedin.com') || !profileData.linkedinUrl.includes('/in/')) {
+      const url = new URL(normalizedUrl);
+      if (!url.hostname.includes('linkedin.com') || !normalizedUrl.includes('/in/')) {
         setError('올바른 LinkedIn 프로필 URL을 입력해주세요');
         setShowGuide(true);
         return;
@@ -104,6 +110,9 @@ export default function JoinPage() {
       setShowGuide(true);
       return;
     }
+
+    // Update profile data with normalized URL
+    setProfileData(prev => ({ ...prev, linkedinUrl: normalizedUrl }));
 
     setIsLoading(true);
     setError('');
@@ -117,7 +126,7 @@ export default function JoinPage() {
           name: profileData.name,
           headline: profileData.headline,
           photoUrl: profileData.photoUrl,
-          linkedinUrl: profileData.linkedinUrl.trim() || undefined,
+          linkedinUrl: normalizedUrl,
         }),
       });
 
