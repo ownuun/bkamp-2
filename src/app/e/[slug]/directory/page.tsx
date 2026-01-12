@@ -1,5 +1,6 @@
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { getEventBySlug, getEventParticipants } from '@/lib/supabase';
 import { ParticipantCard, ParticipantCardCompact } from '@/components/participant/ParticipantCard';
@@ -29,6 +30,8 @@ export default async function DirectoryPage({ params, searchParams }: DirectoryP
     notFound();
   }
 
+  const t = await getTranslations('directory');
+
   // Check if user is a participant
   const { data: userRecord } = await supabase
     .from('users')
@@ -48,16 +51,16 @@ export default async function DirectoryPage({ params, searchParams }: DirectoryP
               </svg>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900 mb-2">참여자만 열람 가능</h1>
+              <h1 className="text-xl font-bold text-gray-900 mb-2">{t('participantsOnly')}</h1>
               <p className="text-gray-600">
-                이 이벤트에 먼저 등록해야 참여자 목록을 볼 수 있습니다.
+                {t('participantsOnlyDescription')}
               </p>
             </div>
             <Link
               href={`/e/${slug}/join`}
               className="block w-full py-3 px-4 bg-brand-600 text-white text-center rounded-lg font-semibold hover:bg-brand-700 transition-colors"
             >
-              이벤트 참여하기
+              {t('joinEvent')}
             </Link>
           </CardContent>
         </Card>
@@ -84,16 +87,16 @@ export default async function DirectoryPage({ params, searchParams }: DirectoryP
               </svg>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900 mb-2">참여자만 열람 가능</h1>
+              <h1 className="text-xl font-bold text-gray-900 mb-2">{t('participantsOnly')}</h1>
               <p className="text-gray-600">
-                이 이벤트에 먼저 등록해야 참여자 목록을 볼 수 있습니다.
+                {t('participantsOnlyDescription')}
               </p>
             </div>
             <Link
               href={`/e/${slug}/join`}
               className="block w-full py-3 px-4 bg-brand-600 text-white text-center rounded-lg font-semibold hover:bg-brand-700 transition-colors"
             >
-              이벤트 참여하기
+              {t('joinEvent')}
             </Link>
           </CardContent>
         </Card>
@@ -127,7 +130,7 @@ export default async function DirectoryPage({ params, searchParams }: DirectoryP
               </svg>
             </Link>
             <div className="flex-1">
-              <h1 className="font-semibold text-gray-900">참여자</h1>
+              <h1 className="font-semibold text-gray-900">{t('participantsTitle')}</h1>
               <p className="text-xs text-gray-500">{event.name}</p>
             </div>
             <UserMenu />
@@ -153,21 +156,21 @@ export default async function DirectoryPage({ params, searchParams }: DirectoryP
             </div>
             {query ? (
               <>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">검색 결과가 없습니다</h3>
-                <p className="text-gray-500 text-sm">다른 키워드로 검색해보세요</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">{t('noSearchResults')}</h3>
+                <p className="text-gray-500 text-sm">{t('noSearchResultsDescription')}</p>
               </>
             ) : (
               <>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">아직 다른 참여자가 없습니다</h3>
-                <p className="text-gray-500 text-sm">이벤트를 공유해서 더 많은 참여자를 초대하세요!</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">{t('noOtherParticipants')}</h3>
+                <p className="text-gray-500 text-sm">{t('shareEvent')}</p>
               </>
             )}
           </div>
         ) : (
           <>
             <p className="text-sm text-gray-500 mb-4">
-              {query ? `"${query}" 검색 결과: ` : ''}
-              {filteredParticipants.length}명
+              {query ? t('searchResults', { query }) : ''}
+              {t('participantCount', { count: filteredParticipants.length })}
             </p>
 
             {view === 'grid' ? (

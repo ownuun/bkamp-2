@@ -58,8 +58,11 @@
     "coverImageDescription": "Enter the image URL",
     "creating": "Creating...",
     "notFound": "Event not found",
-    "participants": " participants",
-    "viewAll": "View all →"
+    "participants": "{count} participants",
+    "viewAll": "View all →",
+    "registerProfile": "Register LinkedIn Profile",
+    "registerDescription": "Register your profile to connect with other participants",
+    "loginToCreate": "Please log in to create an event"
   },
   "join": {
     "title": "Join Event",
@@ -75,6 +78,12 @@
     "linkedinUrl": "LinkedIn Profile URL",
     "linkedinUrlPlaceholder": "https://linkedin.com/in/username",
     "linkedinUrlDescription": "Other participants can visit your LinkedIn profile",
+    "linkedinUrlGuide": "How to find LinkedIn URL",
+    "linkedinUrlGuideTitle": "Find your LinkedIn profile URL",
+    "linkedinUrlGuideStep1": "Go to your profile in LinkedIn app or website",
+    "linkedinUrlGuideStep2": "Click Contact info at the top of your profile",
+    "linkedinUrlGuideStep3": "Copy the Profile URL",
+    "linkedinUrlGuideHint": "Copy the URL under \"Profile\" in the screen above",
     "submit": "Register",
     "submitting": "Registering...",
     "success": "Registration Complete!",
@@ -84,16 +93,29 @@
     "registerProfile": "Register LinkedIn Profile",
     "registerProfileDescription": "Register your profile to connect with other participants",
     "visibilityNote": "By logging in, other participants can see your profile",
-    "registrationNote": "By registering, other event participants can see your profile"
+    "registrationNote": "By registering, other event participants can see your profile",
+    "enterName": "Enter name",
+    "registrationFailed": "Registration failed"
   },
   "directory": {
     "title": "Participant Directory",
+    "participantsTitle": "Participants",
     "browseParticipants": "Browse Participants",
     "backToEvent": "Back to Event Page",
     "connect": "Connect",
     "noParticipants": "No participants yet",
     "beFirst": "Be the first to join!",
-    "joinNow": "Join Now"
+    "joinNow": "Join Now",
+    "participantsOnly": "Participants Only",
+    "participantsOnlyDescription": "You need to register for this event first to view the participant list.",
+    "joinEvent": "Join Event",
+    "searchPlaceholder": "Search by name, company, keyword",
+    "noSearchResults": "No search results",
+    "noSearchResultsDescription": "Try a different keyword",
+    "noOtherParticipants": "No other participants yet",
+    "shareEvent": "Share the event to invite more participants!",
+    "searchResults": "Results for \"{query}\": ",
+    "participantCount": "{count} people"
   },
   "footer": {
     "tagline": "Make networking easier with MeetLink"

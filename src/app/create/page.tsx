@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -25,6 +26,10 @@ interface FormData {
 export default function CreateEventPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
+  const tCommon = useTranslations('common');
+  const tEvent = useTranslations('event');
+  const tValidation = useTranslations('validation');
+  const tError = useTranslations('error');
 
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -59,19 +64,19 @@ export default function CreateEventPage() {
     setError('');
 
     if (!formData.name.trim()) {
-      setError('이벤트 이름을 입력해주세요');
+      setError(tValidation('eventNameRequired'));
       return;
     }
     if (!formData.slug.trim()) {
-      setError('URL을 입력해주세요');
+      setError(tValidation('eventUrlRequired'));
       return;
     }
     if (!formData.date) {
-      setError('날짜를 선택해주세요');
+      setError(tValidation('eventDateRequired'));
       return;
     }
     if (!formData.location.trim()) {
-      setError('장소를 입력해주세요');
+      setError(tValidation('eventLocationRequired'));
       return;
     }
 
@@ -107,13 +112,13 @@ export default function CreateEventPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || '이벤트 생성에 실패했습니다');
+        throw new Error(data.error || tError('createFailed'));
       }
 
       // Redirect to the new event page
       router.push(`/e/${formData.slug}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '이벤트 생성에 실패했습니다');
+      setError(err instanceof Error ? err.message : tError('createFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -135,7 +140,7 @@ export default function CreateEventPage() {
         <header className="bg-white border-b border-gray-200">
           <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
             <Link href="/" className="text-brand-600 font-semibold text-lg">
-              MeetLink
+              {tCommon('appName')}
             </Link>
             <UserMenu />
           </div>
@@ -150,9 +155,9 @@ export default function CreateEventPage() {
                 </svg>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900 mb-2">이벤트 만들기</h1>
+                <h1 className="text-xl font-bold text-gray-900 mb-2">{tEvent('create')}</h1>
                 <p className="text-gray-600">
-                  이벤트를 만들려면 먼저 로그인해주세요
+                  {tEvent('loginToCreate')}
                 </p>
               </div>
               <LinkedInLoginButton redirectTo="/create" className="w-full max-w-xs mx-auto" />
@@ -169,7 +174,7 @@ export default function CreateEventPage() {
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="text-brand-600 font-semibold text-lg">
-            MeetLink
+            {tCommon('appName')}
           </Link>
           <UserMenu />
         </div>
@@ -180,17 +185,17 @@ export default function CreateEventPage() {
         <Card>
           <CardContent className="space-y-6">
             <div className="space-y-2">
-              <h1 className="text-2xl font-bold text-gray-900">새 이벤트 만들기</h1>
+              <h1 className="text-2xl font-bold text-gray-900">{tEvent('createNew')}</h1>
               <p className="text-sm text-gray-600">
-                네트워킹 이벤트를 만들고 참여자들을 연결하세요
+                {tEvent('createDescription')}
               </p>
             </div>
 
             <div className="space-y-4">
               {/* Event Name */}
               <Input
-                label="이벤트 이름"
-                placeholder="예: 스타트업 네트워킹 밋업"
+                label={tEvent('name')}
+                placeholder={tEvent('namePlaceholder')}
                 value={formData.name}
                 onChange={handleNameChange}
                 isRequired
@@ -199,11 +204,11 @@ export default function CreateEventPage() {
               {/* Slug */}
               <div>
                 <Input
-                  label="이벤트 URL"
+                  label={tEvent('url')}
                   placeholder="startup-meetup"
                   value={formData.slug}
                   onChange={(v) => setFormData((prev) => ({ ...prev, slug: v.toLowerCase().replace(/[^a-z0-9-]/g, '') }))}
-                  description={formData.slug ? `meetlink.app/e/${formData.slug}` : '영문 소문자, 숫자, 하이픈만 사용 가능'}
+                  description={formData.slug ? `meetlink.app/e/${formData.slug}` : tEvent('urlDescription')}
                   isRequired
                 />
               </div>
@@ -211,14 +216,14 @@ export default function CreateEventPage() {
               {/* Date & Time */}
               <div className="grid grid-cols-2 gap-4">
                 <Input
-                  label="시작 날짜"
+                  label={tEvent('startDate')}
                   type="date"
                   value={formData.date}
                   onChange={(v) => setFormData((prev) => ({ ...prev, date: v }))}
                   isRequired
                 />
                 <Input
-                  label="시작 시간"
+                  label={tEvent('startTime')}
                   type="time"
                   value={formData.time}
                   onChange={(v) => setFormData((prev) => ({ ...prev, time: v }))}
@@ -227,13 +232,13 @@ export default function CreateEventPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <Input
-                  label="종료 날짜 (선택)"
+                  label={tEvent('endDate')}
                   type="date"
                   value={formData.endDate}
                   onChange={(v) => setFormData((prev) => ({ ...prev, endDate: v }))}
                 />
                 <Input
-                  label="종료 시간"
+                  label={tEvent('endTime')}
                   type="time"
                   value={formData.endTime}
                   onChange={(v) => setFormData((prev) => ({ ...prev, endTime: v }))}
@@ -242,8 +247,8 @@ export default function CreateEventPage() {
 
               {/* Location */}
               <Input
-                label="장소"
-                placeholder="예: 서울 강남구 테헤란로 123"
+                label={tEvent('location')}
+                placeholder={tEvent('locationPlaceholder')}
                 value={formData.location}
                 onChange={(v) => setFormData((prev) => ({ ...prev, location: v }))}
                 isRequired
@@ -252,12 +257,12 @@ export default function CreateEventPage() {
               {/* Description */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  설명 (선택)
+                  {tEvent('description')}
                 </label>
                 <textarea
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-none"
                   rows={3}
-                  placeholder="이벤트에 대한 간단한 설명을 입력하세요"
+                  placeholder={tEvent('descriptionPlaceholder')}
                   value={formData.description}
                   onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
                 />
@@ -265,11 +270,11 @@ export default function CreateEventPage() {
 
               {/* Cover Image URL */}
               <Input
-                label="커버 이미지 URL (선택)"
-                placeholder="https://example.com/image.jpg"
+                label={tEvent('coverImage')}
+                placeholder={tEvent('coverImagePlaceholder')}
                 value={formData.coverImageUrl}
                 onChange={(v) => setFormData((prev) => ({ ...prev, coverImageUrl: v }))}
-                description="이미지 URL을 입력하세요"
+                description={tEvent('coverImageDescription')}
               />
 
               {/* Error */}
@@ -284,7 +289,7 @@ export default function CreateEventPage() {
                 className="w-full"
                 size="lg"
               >
-                {isLoading ? '생성 중...' : '이벤트 만들기'}
+                {isLoading ? tEvent('creating') : tEvent('create')}
               </Button>
             </div>
           </CardContent>
