@@ -5,6 +5,7 @@ import { getEventBySlug, getEventParticipants } from '@/lib/supabase';
 import { ParticipantCard, ParticipantCardCompact } from '@/components/participant/ParticipantCard';
 import { DirectorySearch } from './DirectorySearch';
 import { Card, CardContent } from '@/components/ui/Card';
+import { UserMenu } from '@/components/auth/UserMenu';
 
 interface DirectoryPageProps {
   params: Promise<{ slug: string }>;
@@ -129,6 +130,7 @@ export default async function DirectoryPage({ params, searchParams }: DirectoryP
               <h1 className="font-semibold text-gray-900">참여자</h1>
               <p className="text-xs text-gray-500">{event.name}</p>
             </div>
+            <UserMenu />
           </div>
         </div>
       </header>
