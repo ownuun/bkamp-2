@@ -7,6 +7,7 @@ export interface Event {
   end_date?: string;
   location: string;
   description?: string;
+  cover_image_url?: string; // 이벤트 커버 이미지
   directory_access_days: number; // 운영진 설정: 디렉토리 접근 기간
   language: 'ko' | 'en' | 'both';
   organizer_id: string;

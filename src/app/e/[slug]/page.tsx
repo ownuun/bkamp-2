@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { getEventBySlug, getParticipantCount, getEventParticipants } from '@/lib/supabase';
 import { formatDate } from '@/lib/utils';
 import { Avatar } from '@/components/ui/Avatar';
@@ -36,7 +37,21 @@ export default async function EventPage({ params }: EventPageProps) {
 
       {/* Main Content */}
       <main className="max-w-2xl mx-auto px-4 py-8">
-        <Card>
+        <Card className="overflow-hidden">
+          {/* Cover Image */}
+          {event.cover_image_url ? (
+            <div className="relative h-48 w-full">
+              <Image
+                src={event.cover_image_url}
+                alt={event.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+          ) : (
+            <div className="h-32 w-full bg-gradient-to-br from-brand-500 to-brand-700" />
+          )}
+
           <CardContent className="space-y-6">
             {/* Event Info */}
             <div className="space-y-3">
