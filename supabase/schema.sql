@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS events (
     end_date TIMESTAMPTZ,
     location TEXT NOT NULL,
     description TEXT,
+    cover_image_url TEXT,
     directory_access_days INTEGER DEFAULT 30,
     language TEXT DEFAULT 'both' CHECK (language IN ('ko', 'en', 'both')),
     organizer_id UUID,
