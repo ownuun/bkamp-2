@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar } from '@/components/ui/Avatar';
@@ -9,7 +8,7 @@ import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 export function UserMenu() {
   const t = useTranslations('auth');
-  const { user, isLoading, signOut } = useAuth();
+  const { user, isLoading, signOut, signInWithLinkedIn } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
   if (isLoading) {
@@ -20,12 +19,12 @@ export function UserMenu() {
     return (
       <div className="flex items-center gap-2">
         <LanguageSwitcher />
-        <Link
-          href="/auth/login"
+        <button
+          onClick={() => signInWithLinkedIn()}
           className="text-sm font-medium text-brand-600 hover:text-brand-700"
         >
           {t('login')}
-        </Link>
+        </button>
       </div>
     );
   }
