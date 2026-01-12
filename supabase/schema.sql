@@ -152,7 +152,7 @@ CREATE POLICY "Anyone can create connections" ON connections
     FOR INSERT WITH CHECK (true);
 
 -- Insert sample event for testing
-INSERT INTO events (name, slug, date, end_date, location, description, directory_access_days, language)
+INSERT INTO events (name, slug, date, end_date, location, description, cover_image_url, directory_access_days, language)
 VALUES (
     'Vibe Coding for Founders in SF',
     'vibe-coding-sf-2025',
@@ -160,6 +160,7 @@ VALUES (
     '2025-01-14 16:30:00-08',
     '300 Grant Ave Suite 500, San Francisco, CA 94108',
     'Vibe coding networking event for startup founders',
+    '/images/vibe-coding-cover.png',
     30,
     'both'
 ) ON CONFLICT (slug) DO NOTHING;
