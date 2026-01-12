@@ -321,6 +321,19 @@ export default function JoinPage() {
                       onChange={(v) => setProfileData(prev => ({ ...prev, linkedinUrl: v }))}
                       isRequired
                     />
+                    {profileData.linkedinUrl && (
+                      <div className="text-sm">
+                        <span className="text-gray-600">{t('yourProfileUrl')}: </span>
+                        <a
+                          href={profileData.linkedinUrl.startsWith('http') ? profileData.linkedinUrl : `https://${profileData.linkedinUrl}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-brand-600 hover:text-brand-700 underline"
+                        >
+                          {profileData.linkedinUrl}
+                        </a>
+                      </div>
+                    )}
                     <button
                       type="button"
                       onClick={() => setShowGuide(!showGuide)}
