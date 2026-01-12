@@ -33,11 +33,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate LinkedIn URL if provided
-    if (linkedinUrl) {
+    // Normalize and validate LinkedIn URL if provided
+    let normalizedLinkedinUrl = linkedinUrl?.trim();
+    if (normalizedLinkedinUrl) {
+      // Auto-add https:// if missing
+      if (!normalizedLinkedinUrl.startsWith('http://') && !normalizedLinkedinUrl.startsWith('https://')) {
+        normalizedLinkedinUrl = `https://${normalizedLinkedinUrl}`;
+      }
+      // Normalize http to https
+      if (normalizedLinkedinUrl.startsWith('http://')) {
+        normalizedLinkedinUrl = normalizedLinkedinUrl.replace('http://', 'https://');
+      }
+
       try {
-        const url = new URL(linkedinUrl);
-        if (!url.hostname.includes('linkedin.com') || !linkedinUrl.includes('/in/')) {
+        const url = new URL(normalizedLinkedinUrl);
+        if (!url.hostname.includes('linkedin.com') || !normalizedLinkedinUrl.includes('/in/')) {
           return NextResponse.json(
             { error: '올바른 LinkedIn 프로필 URL을 입력해주세요' },
             { status: 400 }
@@ -68,7 +78,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get LinkedIn info - prefer user-provided URL, then metadata, then fallback
-    const finalLinkedinUrl = linkedinUrl ||
+    const finalLinkedinUrl = normalizedLinkedinUrl ||
       authUser.user_metadata?.linkedin_url ||
       `https://www.linkedin.com/in/${authUser.id}`;
 
@@ -88,7 +98,7 @@ export async function POST(request: NextRequest) {
           name: name.trim(),
           headline: headline?.trim() || null,
           photo_url: photoUrl || existingUser.photo_url,
-          linkedin_url: linkedinUrl || existingUser.linkedin_url,
+          linkedin_url: normalizedLinkedinUrl || existingUser.linkedin_url,
           updated_at: new Date().toISOString(),
         })
         .eq('id', existingUser.id)
