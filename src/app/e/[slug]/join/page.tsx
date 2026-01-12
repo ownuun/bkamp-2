@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -16,6 +17,7 @@ interface ProfileData {
   name: string;
   headline: string;
   photoUrl: string;
+  linkedinUrl: string;
 }
 
 export default function JoinPage() {
@@ -28,10 +30,12 @@ export default function JoinPage() {
     name: '',
     headline: '',
     photoUrl: '',
+    linkedinUrl: '',
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingParticipation, setIsCheckingParticipation] = useState(true);
+  const [showGuide, setShowGuide] = useState(false);
 
   // Check if user is already a participant
   useEffect(() => {
@@ -48,6 +52,7 @@ export default function JoinPage() {
       name: user.user_metadata?.full_name || user.user_metadata?.name || '',
       headline: '',
       photoUrl: user.user_metadata?.picture || user.user_metadata?.avatar_url || '',
+      linkedinUrl: user.user_metadata?.linkedin_url || '',
     });
 
     // Check if already joined
@@ -80,6 +85,26 @@ export default function JoinPage() {
       return;
     }
 
+    // Validate LinkedIn URL (required)
+    if (!profileData.linkedinUrl.trim()) {
+      setError('LinkedIn 프로필 URL을 입력해주세요');
+      setShowGuide(true);
+      return;
+    }
+
+    try {
+      const url = new URL(profileData.linkedinUrl);
+      if (!url.hostname.includes('linkedin.com') || !profileData.linkedinUrl.includes('/in/')) {
+        setError('올바른 LinkedIn 프로필 URL을 입력해주세요');
+        setShowGuide(true);
+        return;
+      }
+    } catch {
+      setError('올바른 LinkedIn 프로필 URL을 입력해주세요');
+      setShowGuide(true);
+      return;
+    }
+
     setIsLoading(true);
     setError('');
 
@@ -92,6 +117,7 @@ export default function JoinPage() {
           name: profileData.name,
           headline: profileData.headline,
           photoUrl: profileData.photoUrl,
+          linkedinUrl: profileData.linkedinUrl.trim() || undefined,
         }),
       });
 
@@ -273,6 +299,49 @@ export default function JoinPage() {
                     onChange={(v) => setProfileData(prev => ({ ...prev, headline: v }))}
                     description="직책, 회사, 또는 자신을 소개하는 한 줄"
                   />
+
+                  <div className="space-y-2">
+                    <Input
+                      label="LinkedIn 프로필 URL"
+                      placeholder="https://linkedin.com/in/username"
+                      value={profileData.linkedinUrl}
+                      onChange={(v) => setProfileData(prev => ({ ...prev, linkedinUrl: v }))}
+                      isRequired
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowGuide(!showGuide)}
+                      className="text-sm text-brand-600 hover:text-brand-700 flex items-center gap-1"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      LinkedIn URL 찾는 법
+                    </button>
+
+                    {showGuide && (
+                      <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 space-y-3">
+                        <h4 className="font-medium text-blue-900">LinkedIn 프로필 URL 찾기</h4>
+                        <ol className="text-sm text-blue-800 space-y-2 list-decimal list-inside">
+                          <li>LinkedIn 앱 또는 웹사이트에서 <strong>내 프로필</strong>로 이동</li>
+                          <li>프로필 상단의 <strong>연락처 정보</strong> 클릭</li>
+                          <li><strong>프로필 URL</strong> 복사</li>
+                        </ol>
+                        <div className="relative w-full rounded-lg overflow-hidden border border-blue-200 bg-white">
+                          <Image
+                            src="/images/linkedin-url-guide.png"
+                            alt="LinkedIn URL 찾기 가이드"
+                            width={600}
+                            height={500}
+                            className="w-full h-auto"
+                          />
+                        </div>
+                        <p className="text-xs text-blue-600">
+                          위 화면에서 &quot;프로필&quot; 아래 URL을 복사하세요
+                        </p>
+                      </div>
+                    )}
+                  </div>
 
                   {error && (
                     <p className="text-sm text-error-600">{error}</p>
