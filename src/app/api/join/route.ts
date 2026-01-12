@@ -6,6 +6,7 @@ interface JoinRequest {
   name: string;
   headline?: string;
   photoUrl?: string;
+  linkedinUrl?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: JoinRequest = await request.json();
-    const { eventSlug, name, headline, photoUrl } = body;
+    const { eventSlug, name, headline, photoUrl, linkedinUrl } = body;
 
     // Validation
     if (!eventSlug || !name) {
@@ -30,6 +31,24 @@ export async function POST(request: NextRequest) {
         { error: '필수 정보가 누락되었습니다' },
         { status: 400 }
       );
+    }
+
+    // Validate LinkedIn URL if provided
+    if (linkedinUrl) {
+      try {
+        const url = new URL(linkedinUrl);
+        if (!url.hostname.includes('linkedin.com') || !linkedinUrl.includes('/in/')) {
+          return NextResponse.json(
+            { error: '올바른 LinkedIn 프로필 URL을 입력해주세요' },
+            { status: 400 }
+          );
+        }
+      } catch {
+        return NextResponse.json(
+          { error: '올바른 LinkedIn 프로필 URL을 입력해주세요' },
+          { status: 400 }
+        );
+      }
     }
 
     // Get event (using same supabase client)
@@ -48,8 +67,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get LinkedIn info from auth user metadata
-    const linkedinUrl = authUser.user_metadata?.linkedin_url ||
+    // Get LinkedIn info - prefer user-provided URL, then metadata, then fallback
+    const finalLinkedinUrl = linkedinUrl ||
+      authUser.user_metadata?.linkedin_url ||
       `https://www.linkedin.com/in/${authUser.id}`;
 
     // Create or update user with auth_user_id
@@ -68,6 +88,7 @@ export async function POST(request: NextRequest) {
           name: name.trim(),
           headline: headline?.trim() || null,
           photo_url: photoUrl || existingUser.photo_url,
+          linkedin_url: linkedinUrl || existingUser.linkedin_url,
           updated_at: new Date().toISOString(),
         })
         .eq('id', existingUser.id)
@@ -88,7 +109,7 @@ export async function POST(request: NextRequest) {
         .from('users')
         .insert({
           auth_user_id: authUser.id,
-          linkedin_url: linkedinUrl,
+          linkedin_url: finalLinkedinUrl,
           name: name.trim(),
           headline: headline?.trim() || null,
           photo_url: photoUrl || null,

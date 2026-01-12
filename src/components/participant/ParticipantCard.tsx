@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
 import type { ParticipantWithUser } from '@/types';
@@ -11,15 +12,30 @@ interface ParticipantCardProps {
   className?: string;
 }
 
+// Check if a URL is a valid LinkedIn profile URL
+function isValidLinkedInUrl(url: string | undefined | null): boolean {
+  if (!url) return false;
+  try {
+    const parsed = new URL(url);
+    return parsed.hostname.includes('linkedin.com') && url.includes('/in/');
+  } catch {
+    return false;
+  }
+}
+
 export function ParticipantCard({
   participant,
   showConnectButton = true,
   className,
 }: ParticipantCardProps) {
+  const t = useTranslations('directory');
   const { user } = participant;
+  const hasValidLinkedIn = isValidLinkedInUrl(user.linkedin_url);
 
   const handleConnect = () => {
-    window.open(user.linkedin_url, '_blank', 'noopener,noreferrer');
+    if (hasValidLinkedIn) {
+      window.open(user.linkedin_url, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
@@ -42,14 +58,14 @@ export function ParticipantCard({
         )}
       </div>
 
-      {showConnectButton && (
+      {showConnectButton && hasValidLinkedIn && (
         <Button
           variant="outline"
           size="sm"
           onPress={handleConnect}
           className="flex-shrink-0"
         >
-          연결
+          {t('connect')}
         </Button>
       )}
     </div>
@@ -62,18 +78,24 @@ export function ParticipantCardCompact({
   className,
 }: Omit<ParticipantCardProps, 'showConnectButton'>) {
   const { user } = participant;
+  const hasValidLinkedIn = isValidLinkedInUrl(user.linkedin_url);
 
   const handleClick = () => {
-    window.open(user.linkedin_url, '_blank', 'noopener,noreferrer');
+    if (hasValidLinkedIn) {
+      window.open(user.linkedin_url, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
     <button
       onClick={handleClick}
+      disabled={!hasValidLinkedIn}
       className={cn(
         'flex flex-col items-center gap-3 p-4 bg-white rounded-xl border border-gray-200',
-        'hover:border-brand-300 hover:shadow-md transition-all cursor-pointer',
-        'focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2',
+        hasValidLinkedIn
+          ? 'hover:border-brand-300 hover:shadow-md cursor-pointer'
+          : 'cursor-default opacity-75',
+        'transition-all focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2',
         className
       )}
     >
