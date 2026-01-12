@@ -3,13 +3,8 @@
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/Card';
 import { UserMenu } from '@/components/auth/UserMenu';
-import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
-import { useAuth } from '@/contexts/AuthContext';
-import { LinkedInLoginButton } from '@/components/auth/LinkedInLoginButton';
 
 export default function HomePage() {
-  const { user, isLoading } = useAuth();
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -18,16 +13,7 @@ export default function HomePage() {
           <Link href="/" className="text-brand-600 font-bold text-xl">
             MeetLink
           </Link>
-          <div className="flex items-center gap-2">
-            <LanguageSwitcher />
-            {!isLoading && (
-              user ? (
-                <UserMenu />
-              ) : (
-                <LinkedInLoginButton redirectTo="/" className="text-sm" />
-              )
-            )}
-          </div>
+          <UserMenu />
         </div>
       </header>
 
