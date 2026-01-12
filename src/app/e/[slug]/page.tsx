@@ -4,6 +4,7 @@ import { getEventBySlug, getParticipantCount, getEventParticipants } from '@/lib
 import { formatDate } from '@/lib/utils';
 import { Avatar } from '@/components/ui/Avatar';
 import { Card, CardContent } from '@/components/ui/Card';
+import { UserMenu } from '@/components/auth/UserMenu';
 
 interface EventPageProps {
   params: Promise<{ slug: string }>;
@@ -25,10 +26,11 @@ export default async function EventPage({ params }: EventPageProps) {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
-        <div className="max-w-2xl mx-auto px-4 py-4">
+        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="text-brand-600 font-semibold text-lg">
             MeetLink
           </Link>
+          <UserMenu />
         </div>
       </header>
 
