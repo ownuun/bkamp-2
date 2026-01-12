@@ -41,10 +41,10 @@ export default function HomePage() {
               {t('liveEvent')}
             </div>
             <h2 className="text-xl font-bold text-gray-900 mb-2">
-              창업자들이 꼭 알아야 할 바이브코딩 in SF
+              Vibe Coding for Founders in SF
             </h2>
             <p className="text-gray-600 text-sm mb-4">
-              2025년 1월 14일 · San Francisco
+              2025.01.14 · San Francisco
             </p>
             <Link
               href="/e/vibe-coding-sf-2025"
