@@ -1,4 +1,17 @@
 {
+  "home": {
+    "hero": "네트워킹 이벤트에서\nLinkedIn을 쉽게 교환하세요",
+    "heroDescription": "참여자들과 연결하고, 놓친 연락처를 찾아보세요",
+    "liveEvent": "진행 중인 이벤트",
+    "viewEvent": "이벤트 보기 →",
+    "howItWorks": "사용 방법",
+    "step1Title": "LinkedIn URL 등록",
+    "step1Description": "이벤트 페이지에서 내 LinkedIn 프로필을 등록하세요",
+    "step2Title": "참여자 둘러보기",
+    "step2Description": "다른 참여자들의 프로필을 보고 LinkedIn으로 연결하세요",
+    "step3Title": "놓친 사람 찾기",
+    "step3Description": "이벤트 후에도 검색으로 놓친 연락처를 찾을 수 있어요"
+  },
   "common": {
     "appName": "MeetLink",
     "loading": "로딩 중...",

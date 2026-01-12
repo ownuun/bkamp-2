@@ -1,4 +1,17 @@
 {
+  "home": {
+    "hero": "Exchange LinkedIn easily\nat networking events",
+    "heroDescription": "Connect with participants and find missed contacts",
+    "liveEvent": "Live Event",
+    "viewEvent": "View Event →",
+    "howItWorks": "How it works",
+    "step1Title": "Register LinkedIn URL",
+    "step1Description": "Register your LinkedIn profile on the event page",
+    "step2Title": "Browse Participants",
+    "step2Description": "View other participants' profiles and connect on LinkedIn",
+    "step3Title": "Find Missed Contacts",
+    "step3Description": "Search for missed contacts even after the event"
+  },
   "common": {
     "appName": "MeetLink",
     "loading": "Loading...",
